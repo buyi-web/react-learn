@@ -1,3 +1,5 @@
+import ListenerManage from './ListenerManage';
+
 /**
  * 创建一个history api的history对象
  * @param {*} options 
@@ -10,7 +12,7 @@ export default function createBrowserHistory(options = {}) {
         keyLength = 6,
         getUserConfirmation = (message, callback) => callback(window.confirm(message))
     } = options;
-
+    const listenerManage = new ListenerManage();
     function go(step) {
         window.history.go(step);
     }
@@ -38,10 +40,29 @@ export default function createBrowserHistory(options = {}) {
             action = "REPLACE"
         }
         const pathInfo = formatPathAndState(path, state, basename);
-        
+        const location = createLocationByPath(pathInfo, basename);
+        if (isPush) {
+            window.history.pushState({
+                key: createKey(keyLength),
+                state: pathInfo.state
+            }, null, pathInfo.path);
+        }
+        else {
+            window.history.replaceState({
+                key: createKey(keyLength),
+                state: pathInfo.state
+            }, null, pathInfo.path);
+        }
+        history.action = action;
+        history.location = location
 
     }
+    function listen(listener) {
+        return listenerManage.addListener(listener)
+    }
+    
     const history = {
+        action: 'POP',
         location: createLocation(options.basename),
         length: window.history.length,
         go,
@@ -49,6 +70,7 @@ export default function createBrowserHistory(options = {}) {
         goForward,
         push,
         replace,
+        listen,
     }
     return history
 }
@@ -86,6 +108,7 @@ function formatPathAndState(path, state, basename) {
 
 }
 
+// 初始化 根据地址栏url产生一个location对象
 function createLocation(basename = "") {
     let pathname = window.location.pathname;
     console.log(pathname);
@@ -115,7 +138,54 @@ function createLocation(basename = "") {
     return location
 }
 
-const h = createBrowserHistory({
+/**
+ * push 和 replace 根据pathInfo创建一个location对象
+ * @param {*} pathInfo  {path:"/news/asdf#aaa?a=2&b=3", state:状态}
+ * @param {*} basename 
+ */
+function createLocationByPath(pathInfo, basename) {
+
+    let pathname = pathInfo.path.replace(/[#?].*$/,'')
+    // 处理basename的情况
+    if(basename){
+        let reg = new RegExp(`^${basename}`);
+        pathname = pathname.replace(reg, "");
+    }
+
+    //search
+    var questionIndex = pathInfo.path.indexOf("?");
+    var sharpIndex = pathInfo.path.indexOf("#");
+    let search;
+    if (questionIndex === -1 || questionIndex > sharpIndex) {
+        search = "";
+    }
+    else {
+        search = pathInfo.path.substring(questionIndex, sharpIndex);
+    }
+    //hash
+    let hash;
+    if (sharpIndex === -1) {
+        hash = "";
+    }
+    else {
+        hash = pathInfo.path.substr(sharpIndex);
+    }
+    return {
+        hash,
+        pathname,
+        search,
+        state: pathInfo.state
+    }
+}
+/**
+ * 产生一个指定长度的随机字符串，随机字符串中可以包含数字和字母
+ * @param {*} keyLength 
+ */
+function createKey(keyLength) {
+    return Math.random().toString(36).substr(2, keyLength);
+}
+
+window.h = createBrowserHistory({
     basename: 'news'
 })
-console.log(h); 
+console.log(window.h); 

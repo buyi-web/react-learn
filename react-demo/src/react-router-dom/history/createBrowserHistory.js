@@ -1,5 +1,5 @@
 import ListenerManage from './ListenerManage';
-
+import BlockManage from './BlockManage';
 /**
  * 创建一个history api的history对象
  * @param {*} options 
@@ -7,12 +7,14 @@ import ListenerManage from './ListenerManage';
 export default function createBrowserHistory(options = {}) {
     // 默认配置
     const { 
-        basename = "",
+        basename = "/",
         forceRefresh = false,
         keyLength = 6,
         getUserConfirmation = (message, callback) => callback(window.confirm(message))
     } = options;
     const listenerManage = new ListenerManage();
+    const blockManager = new BlockManage(getUserConfirmation );
+
     function go(step) {
         window.history.go(step);
     }
@@ -22,7 +24,23 @@ export default function createBrowserHistory(options = {}) {
     function goForward() {
         window.history.forward();
     }
-    
+    /**
+     * 添加对地址变化的监听
+     */
+    function addDomListener() {
+        //popstate事件，仅能监听前进、后退、用户对地址hash的改变
+        //无法监听到pushState、replaceState
+        window.addEventListener("popstate", () => {
+            const location = createLocation(basename);
+            const action = "POP";
+            blockManager.triggerBlock(location, action, () => {
+                listenerManage.triggerListener(location, "POP");
+                history.location = location;
+            })
+        })
+    }
+
+    addDomListener();
     /**
      * 向地址栈中加入一个新的地址
      * @param {*} path 新的地址，可以是字符串，也可以是对象
@@ -41,24 +59,32 @@ export default function createBrowserHistory(options = {}) {
         }
         const pathInfo = formatPathAndState(path, state, basename);
         const location = createLocationByPath(pathInfo, basename);
-        if (isPush) {
-            window.history.pushState({
-                key: createKey(keyLength),
-                state: pathInfo.state
-            }, null, pathInfo.path);
-        }
-        else {
-            window.history.replaceState({
-                key: createKey(keyLength),
-                state: pathInfo.state
-            }, null, pathInfo.path);
-        }
-        history.action = action;
-        history.location = location
-
+        blockManager.triggerBlock(location, action, () => {
+            if (isPush) {
+                window.history.pushState({
+                    key: createKey(keyLength),
+                    state: pathInfo.state
+                }, null, pathInfo.path);
+            }
+            else {
+                window.history.replaceState({
+                    key: createKey(keyLength),
+                    state: pathInfo.state
+                }, null, pathInfo.path);
+            }
+            listenerManage.triggerListener(location, action)
+            history.action = action;
+            history.location = location
+            if (forceRefresh) {  //强制刷新
+                window.location.href = pathInfo.path;
+            }
+        })
     }
     function listen(listener) {
         return listenerManage.addListener(listener)
+    }
+    function block(prompt) {
+        return blockManager.block(prompt);
     }
     
     const history = {
@@ -71,6 +97,7 @@ export default function createBrowserHistory(options = {}) {
         push,
         replace,
         listen,
+        block
     }
     return history
 }
@@ -111,10 +138,8 @@ function formatPathAndState(path, state, basename) {
 // 初始化 根据地址栏url产生一个location对象
 function createLocation(basename = "") {
     let pathname = window.location.pathname;
-    console.log(pathname);
     const regexp = new RegExp(`^/${basename}`)
     pathname = pathname.replace(regexp, "")
-    console.log(pathname);
     const location = {
         hash: window.location.hash,
         search: window.location.search,

@@ -13,7 +13,7 @@ export default class ListenerManage {
     }
 
     // 触发所有监听器
-    triggerListeners(location, action) {
+    triggerListener(location, action) {
         for (const listener of this.listeners) {
             listener(location, action)
         }

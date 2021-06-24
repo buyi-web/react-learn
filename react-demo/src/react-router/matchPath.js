@@ -7,6 +7,10 @@ import { pathToRegexp } from 'path-to-regexp'
  * @param {*} options 相关配置
  */
 export default function matchPath(path, pathname, options){
+    
+    if(pathname[0] !== '/'){
+        pathname = '/' + pathname;
+    }
     const keys = []; //保存路径规则中的关键字
     const regexp = pathToRegexp(path, keys, getOptions(options));
     const result = regexp.exec(pathname);
@@ -16,8 +20,6 @@ export default function matchPath(path, pathname, options){
     let groups = Array.from(result);
     groups = groups.slice(1);
     const params = getParams(groups, keys);
-    console.log(params);
-    console.log(result);
     return {
         isExact: pathname === result[0],
         params, 
@@ -58,5 +60,3 @@ function getParams(groups, keys) {
     }
     return obj;
 }
-const res= matchPath('/news/:id', '/news/food/123');
-console.log(res);

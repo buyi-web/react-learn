@@ -1,32 +1,35 @@
 import React from 'react'
 import { BrowserRouter } from "./react-router-dom"
-import { Route } from './react-router'
-
+import { Route, Switch } from './react-router'
+import  ctx from './react-router/RouterContext'
 function Page1() {
   return <h1>Page1</h1>
 }
 
+
 function Page2() {
-  return <h1>Page2</h1>
+  const renderPage2 = (value) =>  {
+    console.log('page2：ctx',value);
+    return <div>{value.location.pathname}</div>
+  }
+  
+  return (
+    <ctx.Consumer>
+      {renderPage2}
+    </ctx.Consumer>
+  )
 }
 
-function Change({ history }) {
-  return <div>
-      <button onClick={() => {
-          history.push("/page1")
-      }}>去page1</button>
-      <button onClick={() => {
-          history.push("/page2")
-      }}>去page2</button>
-  </div>
-}
+
 export default function App() {
     return (
         <BrowserRouter>
-            <Route path="/page1" component={Page1}>
-            </Route>
-            <Route path="/page2" component={Page2} />
-            <Route component={Change}/>
+          <Switch>
+              <Route path="/page1" component={Page1} exact />
+              <Route path="/page2" component={Page2} />
+              <Route path="/page1/123" component={Page2} />
+          </Switch>
         </BrowserRouter>
+        
     )
 }

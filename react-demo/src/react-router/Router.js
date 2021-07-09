@@ -11,7 +11,6 @@ export default class Router extends Component {
     state = {
         location: this.props.history.location
     }
-    ctxValue = {} //上下文中的对象
     
     componentDidMount() {
         this.unListen = this.props.history.listen((location, action) => {
@@ -29,11 +28,11 @@ export default class Router extends Component {
     
 
     render() {
-            var  ctxValue = {
-                history: this.props.history,
-                location: this.state.location,
-                match: matchPath("/", this.state.location.pathname)
-            }
+        var  ctxValue = {
+            history: this.props.history,
+            location: this.state.location,
+            match: matchPath("/", this.state.location.pathname)
+        }
         return (
             <ctx.Provider value={ctxValue}>
                 {this.props.children}

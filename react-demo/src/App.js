@@ -1,23 +1,17 @@
 import React from 'react'
-import { BrowserRouter } from "./react-router-dom"
-import { Route, Switch } from './react-router'
+import { BrowserRouter } from "/react-router-dom"
+import { Route, Switch } from '/react-router'
 import  ctx from './react-router/RouterContext'
 function Page1() {
   return <h1>Page1</h1>
 }
 
 
-function Page2() {
-  const renderPage2 = (value) =>  {
+function Page2(value) {
+
     console.log('page2：ctx',value);
     return <div>{value.location.pathname}</div>
-  }
-  
-  return (
-    <ctx.Consumer>
-      {renderPage2}
-    </ctx.Consumer>
-  )
+
 }
 
 

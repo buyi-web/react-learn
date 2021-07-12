@@ -14,7 +14,6 @@ export default class Switch extends Component {
             children = [this.props.children]
         }
         for (const child of children) {
-            console.log(child);
             if(child.type !== Route) {
                 throw new TypeError("the children of Switch component must be type of Route");
             }

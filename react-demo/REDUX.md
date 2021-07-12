@@ -124,3 +124,23 @@ Reducer是用于改变数据的函数
    1. redux提供了方法，可以帮助我们更加方便的合并reducer
    2. combineReducers: 合并reducer，得到一个新的reducer，该新的reducer管理一个对象，该对象中的每一个属性交给对应的reducer管理。
 
+### Store
+
+Store：用于保存数据
+
+通过createStore方法创建的对象。
+
+该对象的成员：
+
+- dispatch：分发一个action
+- getState：得到仓库中当前的状态
+- replaceReducer：替换掉当前的reducer
+- subscribe：注册一个监听器，监听器是一个无参函数，分发一个action之后，会运行注册的监听器。该函数会返回一个函数，用于取消监听
+
+### createStore 
+
+返回一个对象：
+
+- dispatch：分发一个action
+- getState：得到仓库中当前的状态
+- subscribe：注册一个监听器，监听器是一个无参函数，该分发一个action之后，会运行注册的监听器。该函数会返回一个函数，用于取消监听

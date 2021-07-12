@@ -7,7 +7,7 @@ import BlockManage from './BlockManage';
 export default function createBrowserHistory(options = {}) {
     // 默认配置
     const { 
-        basename = "/",
+        basename = "",
         forceRefresh = false,
         keyLength = 6,
         getUserConfirmation = (message, callback) => callback(window.confirm(message))
@@ -86,7 +86,16 @@ export default function createBrowserHistory(options = {}) {
     function block(prompt) {
         return blockManager.block(prompt);
     }
-    
+    function createHref(location) {
+        let {pathname = "/", search = "", hash = ""} = location
+        if(search[0] === '?' && search.length === 1) {
+            search = ''
+        }
+        if(hash[0] === '#' && hash.length === 1) {
+            hash = ''
+        }
+        return basename + pathname + search + hash
+    }
     const history = {
         action: 'POP',
         location: createLocation(options.basename),
@@ -97,7 +106,8 @@ export default function createBrowserHistory(options = {}) {
         push,
         replace,
         listen,
-        block
+        block,
+        createHref
     }
     return history
 }
@@ -117,10 +127,10 @@ function formatPathAndState(path, state, basename) {
     }else if(typeof path === 'object') { // 价格path的对象数据格式为{pathname, search, hash, state, ...}
         let pathAll = basename + path.pathname
         let {search = '', hash = ''} = path
-        if(search[0] !== '?'){
+        if(search[0] !== '?' && search.length > 0){
             search += '?'
         }
-        if(hash[0] !== '#') {
+        if(hash[0] !== '#' && hash.length > 0) {
             hash += '#'
         }
         pathAll += search
@@ -176,7 +186,6 @@ function createLocationByPath(pathInfo, basename) {
         let reg = new RegExp(`^${basename}`);
         pathname = pathname.replace(reg, "");
     }
-
     //search
     var questionIndex = pathInfo.path.indexOf("?");
     var sharpIndex = pathInfo.path.indexOf("#");
@@ -209,8 +218,3 @@ function createLocationByPath(pathInfo, basename) {
 function createKey(keyLength) {
     return Math.random().toString(36).substr(2, keyLength);
 }
-
-window.h = createBrowserHistory({
-    basename: 'news'
-})
-console.log(window.h); 

@@ -1,22 +1,6 @@
-/**
- * 判断某个对象是否是一个plain object
- * @param {*} obj 
- */
-function isPlainObject(obj) {
-    if (typeof obj !== "object" || obj === null) {
-        return false;
-    }
-    // Object.getPrototypeOf(obj)  得到obj的原型
-    return Object.getPrototypeOf(obj) === Object.prototype;
-}
+import isPlainObject from './utils/isPlainObject'
+import ActionTypes from "./utils/ActionTypes"
 
-/**
- * 得到一个指定长度的随机字符串
- * @param {*} length 
- */
-function getRandomString(length) {
-    return Math.random().toString(36).substr(2, length).split("").join(".")
-}
 /**
  * 实现createStore的功能
  * @param {function} reducer reducer
@@ -67,7 +51,7 @@ export default function(reducer, defaultState) {
     }
     //创建仓库时，需要分发一次初始的action
     dispatch({
-        type: `@@redux/INIT${getRandomString(7)}`
+        type: ActionTypes.INIT
     })
 
     return {

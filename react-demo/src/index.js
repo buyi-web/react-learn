@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import './store/reduxTest2'
+import './store/reduxTest3'
 
 ReactDOM.render(
   <React.StrictMode>

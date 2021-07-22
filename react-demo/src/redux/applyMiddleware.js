@@ -1,5 +1,5 @@
-import compose  from "./compose";
-/*
+import compose from "./compose";
+/**
  * 注册中间件
  * @param  {...any} middlewares 所有的中间件
  */

@@ -12,13 +12,13 @@ store.dispatch(createAddUserAction({
     age: 10
 }))
 
-console.log(store.getState());
+
 store.dispatch(createAddUserAction({
     id: 4,
     name: "AAA",
     age: 16
 }));
-console.log(store.getState());
+
 store.dispatch(createDeleteUserAction(3));
 console.log(store.getState());
 

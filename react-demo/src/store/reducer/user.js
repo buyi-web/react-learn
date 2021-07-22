@@ -6,7 +6,7 @@ const initialState = [
     { id: uuid(), name: "用户2", age: 12 }
 ];
 
-export default (state = initialState, { type, payload }) => {
+export default function userReducer(state = initialState, { type, payload }) {
     switch (type) {
         case actionTypes.ADDUSER:
             return [...state, payload];

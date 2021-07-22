@@ -30,7 +30,7 @@ export default class BlockManage{
         }
         let message;
         if(typeof this.prompt === 'string') message = this.prompt
-        else if(typeof this.prompt === ' function') message = this.prompt(location, action)
+        else if(typeof this.prompt === 'function') message = this.prompt(location, action)
         this.getUserConfirmation(message, result => {
             if(result) {
                 callback()

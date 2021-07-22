@@ -1,5 +1,5 @@
 
-export default function (actionCreators, dispatch) {
+export default function bindActionCreators (actionCreators, dispatch) {
     if(typeof actionCreators === 'function') {
         return getAutoDispatchActionCreator(actionCreators, dispatch)
     } else if (typeof actionCreators === 'object' && actionCreators !== null) {

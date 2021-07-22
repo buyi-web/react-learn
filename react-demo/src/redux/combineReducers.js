@@ -1,5 +1,6 @@
 import isPlainObject from './utils/isPlainObject'
 import ActionTypes from './utils/ActionTypes'
+
 function validateReducers (reducers) {
     if(typeof reducers !== 'object') {
         throw new TypeError('reducers must be an object')
@@ -30,7 +31,7 @@ function validateReducers (reducers) {
 
 }
 
-export default function (reducers) {
+export default function combineReducers (reducers) {
     // 验证
     validateReducers(reducers)
 

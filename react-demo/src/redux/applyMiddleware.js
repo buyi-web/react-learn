@@ -1,9 +1,9 @@
-import { compose } from "./compose";
-/**
+import compose  from "./compose";
+/*
  * 注册中间件
  * @param  {...any} middlewares 所有的中间件
  */
-export default function (...middleware) {
+export default function applyMiddleware (...middlewares) {
     return function (createStore) { //创建仓库的函数
         return function (reducer, defaultState) {
             // 创建仓库

@@ -6,7 +6,7 @@
     return Math.random().toString(36).substr(2, length).split("").join(".")
 }
 
-export default {
+const actionTypes =  {
     INIT() {
         return `@@redux/INIT${getRandomString(6)}`
     },
@@ -14,3 +14,5 @@ export default {
         return `@@redux/PROBE_UNKNOWN_ACTION${getRandomString(6)}`
     }
 }
+
+export default actionTypes

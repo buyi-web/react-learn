@@ -6,7 +6,7 @@ import ActionTypes from "./utils/ActionTypes"
  * @param {function} reducer reducer
  * @param {any} defaultState 默认的状态值
  */
-export default function(reducer, defaultState) {
+export default function createStore (reducer, defaultState) {
 
     let currentReducer = reducer, //当前使用的reducer
     currentState = defaultState; //当前仓库中的状态
